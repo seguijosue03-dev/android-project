@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <!-- 🏆 TROPHY -->
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@android:drawable/btn_star_big_on"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            app:tint="@android:color/holo_orange_light" />
+
+        <!-- TITLE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quiz Completed!"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_marginBottom="6dp" />
+
+        <!-- MESSAGE -->
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Excellent performance 🎉"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginBottom="32dp" />
+
+        <!-- ⭐ SCORE CARD -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@android:color/holo_blue_dark">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="32dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="YOUR SCORE"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:alpha="0.9"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/tvScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18 / 20"
+                    android:textSize="46sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tvPercentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="90%"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/holo_green_light"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- 📊 BREAKDOWN -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Performance Breakdown"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginBottom="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvCorrect"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="✅ Correct: 18"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/holo_green_dark" />
+
+                    <TextView
+                        android:id="@+id/tvWrong"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="❌ Wrong: 2"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:gravity="end" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 🔘 ACTION BUTTONS -->
+        <Button
+            android:id="@+id/btnReviewAnswers"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="📝 Review Answers"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_blue_dark"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnRetake"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="🔄 Retake Quiz"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_blue_dark"
+            android:background="@android:color/white"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="🏠 Go to Home"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_blue_dark"
+            android:background="@android:color/white" />
+
+    </LinearLayout>
+
+</ScrollView>
