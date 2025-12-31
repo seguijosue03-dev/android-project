@@ -150,18 +150,18 @@ public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerLi
     private void highlightSelectedOption(int index) {
         Button[] buttons = {btnOption1, btnOption2, btnOption3, btnOption4};
 
+        // Set selected state for the chosen button
         if (index >= 0 && index < buttons.length) {
-            buttons[index].setBackgroundResource(R.drawable.option_button_default);
-            buttons[index].setTextColor(ContextCompat.getColor(this, R.color.primary_blue));
+            buttons[index].setSelected(true);
         }
     }
 
     private void resetOptionStyles() {
         Button[] buttons = {btnOption1, btnOption2, btnOption3, btnOption4};
 
+        // Reset selected state for all buttons
         for (Button btn : buttons) {
-            btn.setBackgroundResource(R.drawable.card_background);
-            btn.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+            btn.setSelected(false);
         }
     }
 
