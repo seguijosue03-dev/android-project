@@ -127,7 +127,7 @@ public class QuizFragment extends Fragment {
             String fileName = getFileName(uri);
 
             if (fileName == null) {
-                fileName = "presentation_" + System.currentTimeMillis();
+                fileName = "presentation_" + System.currentTimeMillis() + ".pptx";
             }
 
             selectedPPTName = fileName;
@@ -135,7 +135,10 @@ public class QuizFragment extends Fragment {
             PPTReader pptReader = new PPTReader(requireContext());
 
             if (pptReader.isValidPPT(uri)) {
-                storageManager.savePPTName(fileName);
+                // Save PPT info with URI
+                PPTInfo pptInfo = new PPTInfo(fileName, uri.toString());
+                storageManager.savePPTInfo(pptInfo);
+
                 Toast.makeText(requireContext(), "✅ PPT uploaded: " + fileName, Toast.LENGTH_SHORT).show();
 
                 // Reload list
@@ -188,16 +191,16 @@ public class QuizFragment extends Fragment {
 
     private void loadPPTList() {
         try {
-            List<String> pptNames = storageManager.getAllPPTNames();
+            List<PPTInfo> pptInfoList = storageManager.getAllPPTInfo();
 
-            if (pptNames == null || pptNames.isEmpty()) {
+            if (pptInfoList == null || pptInfoList.isEmpty()) {
                 if (tvEmptyState != null) tvEmptyState.setVisibility(View.VISIBLE);
                 if (rvPPTList != null) rvPPTList.setVisibility(View.GONE);
             } else {
                 if (tvEmptyState != null) tvEmptyState.setVisibility(View.GONE);
                 if (rvPPTList != null) rvPPTList.setVisibility(View.VISIBLE);
 
-                pptAdapter = new PPTAdapter(pptNames);
+                pptAdapter = new PPTAdapter(pptInfoList);
                 rvPPTList.setAdapter(pptAdapter);
             }
         } catch (Exception e) {
@@ -235,10 +238,10 @@ public class QuizFragment extends Fragment {
     // Adapter for PPT List
     private class PPTAdapter extends RecyclerView.Adapter<PPTAdapter.ViewHolder> {
 
-        private List<String> pptNames;
+        private List<PPTInfo> pptInfoList;
 
-        public PPTAdapter(List<String> pptNames) {
-            this.pptNames = pptNames;
+        public PPTAdapter(List<PPTInfo> pptInfoList) {
+            this.pptInfoList = pptInfoList;
         }
 
         @NonNull
@@ -252,7 +255,8 @@ public class QuizFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             try {
-                String pptName = pptNames.get(position);
+                PPTInfo pptInfo = pptInfoList.get(position);
+                String pptName = pptInfo.getFileName();
 
                 holder.tvPPTName.setText(pptName);
 
@@ -269,11 +273,31 @@ public class QuizFragment extends Fragment {
                     holder.tvAvgScore.setVisibility(View.GONE);
                 }
 
-                // Start quiz button
+                // Start quiz button - NOW WORKS!
                 holder.btnStartQuiz.setOnClickListener(v -> {
-                    Toast.makeText(requireContext(),
-                            "⚠️ Please re-upload this PPT from the Upload button above to start a quiz",
-                            Toast.LENGTH_LONG).show();
+                    try {
+                        // Get the URI from stored PPT info
+                        String uriString = pptInfo.getUriString();
+
+                        if (uriString == null || uriString.isEmpty()) {
+                            Toast.makeText(requireContext(),
+                                    "⚠️ Please re-upload this PPT from the Upload button above",
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        // Navigate to QuizSetupActivity
+                        Intent intent = new Intent(requireActivity(), QuizSetupActivity.class);
+                        intent.putExtra("ppt_uri", uriString);
+                        intent.putExtra("ppt_name", pptInfo.getFileName());
+                        startActivity(intent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(requireContext(),
+                                "⚠️ Error opening quiz. Please re-upload this PPT.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -282,7 +306,7 @@ public class QuizFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return pptNames != null ? pptNames.size() : 0;
+            return pptInfoList != null ? pptInfoList.size() : 0;
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {

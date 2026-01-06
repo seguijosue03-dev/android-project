@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Permissions -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -11,9 +12,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/learncraft_logo"
         android:label="LearnCraft"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/learncraft_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.LearnCraft"
         tools:targetApi="31">
@@ -29,15 +30,53 @@
             </intent-filter>
         </activity>
 
-        <!-- Home Activity -->
+        <!-- Login Activity -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Register Activity -->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Main Activity (Student with Navigation) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Home Activity (Legacy - Optional) -->
         <activity
             android:name=".HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Admin Dashboard -->
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- All Quizzes (Admin) -->
+        <activity
+            android:name=".AllQuizzesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- User Quizzes (Admin) -->
+        <activity
+            android:name=".UserQuizzesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <!-- Quiz Setup Activity -->
         <activity
             android:name=".QuizSetupActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <!-- Quiz Activity -->
         <activity
@@ -48,17 +87,20 @@
         <!-- Result Activity -->
         <activity
             android:name=".ResultActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <!-- Review Answers Activity -->
         <activity
             android:name=".ReviewAnswersActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <!-- Analytics Activity -->
         <activity
             android:name=".AnalyticsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
     </application>
 

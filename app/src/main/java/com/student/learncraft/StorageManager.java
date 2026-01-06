@@ -13,6 +13,7 @@ public class StorageManager {
     private static final String PREF_NAME = "LearnCraftPrefs";
     private static final String KEY_QUIZ_RESULTS = "quiz_results";
     private static final String KEY_PPT_LIST = "ppt_list";
+    private static final String KEY_PPT_INFO_LIST = "ppt_info_list";
 
     private SharedPreferences preferences;
     private Gson gson;
@@ -118,6 +119,52 @@ public class StorageManager {
      */
     public void clearAllResults() {
         preferences.edit().remove(KEY_QUIZ_RESULTS).apply();
+    }
+
+    /**
+     * Save PPT info (name and URI)
+     */
+    public void savePPTInfo(PPTInfo pptInfo) {
+        List<PPTInfo> pptList = getAllPPTInfo();
+
+        // Remove old entry with same filename
+        pptList.removeIf(info -> info.getFileName().equals(pptInfo.getFileName()));
+
+        pptList.add(pptInfo);
+        String json = gson.toJson(pptList);
+        preferences.edit().putString(KEY_PPT_INFO_LIST, json).apply();
+
+        // Also save to old list for backward compatibility
+        savePPTName(pptInfo.getFileName());
+    }
+
+    /**
+     * Get all PPT info (with URIs)
+     */
+    public List<PPTInfo> getAllPPTInfo() {
+        String json = preferences.getString(KEY_PPT_INFO_LIST, null);
+
+        if (json == null || json.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Type type = new TypeToken<List<PPTInfo>>(){}.getType();
+        List<PPTInfo> pptList = gson.fromJson(json, type);
+
+        return pptList != null ? pptList : new ArrayList<>();
+    }
+
+    /**
+     * Get PPT info by filename
+     */
+    public PPTInfo getPPTInfo(String fileName) {
+        List<PPTInfo> pptList = getAllPPTInfo();
+        for (PPTInfo info : pptList) {
+            if (info.getFileName().equals(fileName)) {
+                return info;
+            }
+        }
+        return null;
     }
 
     /**

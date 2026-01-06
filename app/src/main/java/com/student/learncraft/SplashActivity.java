@@ -30,9 +30,9 @@ public class SplashActivity extends AppCompatActivity {
         appName.startAnimation(fadeIn);
         tagline.startAnimation(fadeIn);
 
-        // Navigate to Home after delay
+        // Navigate to Login after delay
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
 

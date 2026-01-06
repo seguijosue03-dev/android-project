@@ -34,35 +34,42 @@ public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        // Get data from intent
-        pptName = getIntent().getStringExtra("ppt_name");
-        int questionCount = getIntent().getIntExtra("question_count", 20);
-        int timeMinutes = getIntent().getIntExtra("time_minutes", 20);
+        try {
+            // Get data from intent
+            pptName = getIntent().getStringExtra("ppt_name");
+            int questionCount = getIntent().getIntExtra("question_count", 20);
+            int timeMinutes = getIntent().getIntExtra("time_minutes", 20);
 
-        // Get questions from holder
-        questions = QuizSetupActivity.QuizDataHolder.getQuestions();
+            // Get questions from holder
+            questions = QuizSetupActivity.QuizDataHolder.getQuestions();
 
-        if (questions == null || questions.isEmpty()) {
-            Toast.makeText(this, "Error loading questions", Toast.LENGTH_SHORT).show();
+            if (questions == null || questions.isEmpty()) {
+                Toast.makeText(this, "❌ Error: No questions available", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+
+            // Initialize user answers list
+            userAnswers = new ArrayList<>();
+            for (int i = 0; i < questions.size(); i++) {
+                userAnswers.add(-1); // -1 means not answered
+            }
+
+            // Initialize views
+            initViews();
+
+            // Initialize and start timer
+            quizTimer = new QuizTimer(timeMinutes, this);
+            quizTimer.start();
+
+            // Load first question
+            loadQuestion();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "❌ Error starting quiz: " + e.getMessage(), Toast.LENGTH_LONG).show();
             finish();
-            return;
         }
-
-        // Initialize user answers list
-        userAnswers = new ArrayList<>();
-        for (int i = 0; i < questions.size(); i++) {
-            userAnswers.add(-1); // -1 means not answered
-        }
-
-        // Initialize views
-        initViews();
-
-        // Initialize and start timer
-        quizTimer = new QuizTimer(timeMinutes, this);
-        quizTimer.start();
-
-        // Load first question
-        loadQuestion();
     }
 
     private void initViews() {
@@ -96,42 +103,56 @@ public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerLi
             return;
         }
 
-        MCQQuestion question = questions.get(currentQuestionIndex);
+        try {
+            MCQQuestion question = questions.get(currentQuestionIndex);
 
-        // Update question number
-        tvQuestionNumber.setText(String.format("Question %d of %d",
-                currentQuestionIndex + 1, questions.size()));
+            // Validate question
+            if (question == null || question.getOptions() == null || question.getOptions().size() < 4) {
+                Toast.makeText(this, "Error loading question. Skipping...", Toast.LENGTH_SHORT).show();
+                currentQuestionIndex++;
+                loadQuestion();
+                return;
+            }
 
-        // Update progress
-        progressBar.setProgress(currentQuestionIndex + 1);
+            // Update question number
+            tvQuestionNumber.setText(String.format("Question %d of %d",
+                    currentQuestionIndex + 1, questions.size()));
 
-        // Set question text
-        tvQuestion.setText(question.getQuestion());
+            // Update progress
+            progressBar.setProgress(currentQuestionIndex + 1);
 
-        // Set options
-        List<String> options = question.getOptions();
-        btnOption1.setText("A. " + options.get(0));
-        btnOption2.setText("B. " + options.get(1));
-        btnOption3.setText("C. " + options.get(2));
-        btnOption4.setText("D. " + options.get(3));
+            // Set question text
+            tvQuestion.setText(question.getQuestion());
 
-        // Reset option styles
-        resetOptionStyles();
+            // Set options
+            List<String> options = question.getOptions();
+            btnOption1.setText("A. " + options.get(0));
+            btnOption2.setText("B. " + options.get(1));
+            btnOption3.setText("C. " + options.get(2));
+            btnOption4.setText("D. " + options.get(3));
 
-        // If user already answered this question, show their selection
-        int previousAnswer = userAnswers.get(currentQuestionIndex);
-        if (previousAnswer != -1) {
-            selectedOptionIndex = previousAnswer;
-            highlightSelectedOption(previousAnswer);
-        } else {
-            selectedOptionIndex = -1;
-        }
+            // Reset option styles
+            resetOptionStyles();
 
-        // Update next button text
-        if (currentQuestionIndex == questions.size() - 1) {
-            btnNext.setText("Finish Quiz");
-        } else {
-            btnNext.setText("Next Question");
+            // If user already answered this question, show their selection
+            int previousAnswer = userAnswers.get(currentQuestionIndex);
+            if (previousAnswer != -1) {
+                selectedOptionIndex = previousAnswer;
+                highlightSelectedOption(previousAnswer);
+            } else {
+                selectedOptionIndex = -1;
+            }
+
+            // Update next button text
+            if (currentQuestionIndex == questions.size() - 1) {
+                btnNext.setText("Finish Quiz");
+            } else {
+                btnNext.setText("Next Question");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 
@@ -166,18 +187,24 @@ public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerLi
     }
 
     private void nextQuestion() {
-        // Check if user selected an option
-        if (selectedOptionIndex == -1) {
-            Toast.makeText(this, "⚠️ Please select an option", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        try {
+            // Check if user selected an option
+            if (selectedOptionIndex == -1) {
+                Toast.makeText(this, "⚠️ Please select an option", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        // Move to next question
-        currentQuestionIndex++;
+            // Move to next question
+            currentQuestionIndex++;
 
-        if (currentQuestionIndex < questions.size()) {
-            loadQuestion();
-        } else {
+            if (currentQuestionIndex < questions.size()) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             finishQuiz();
         }
     }
@@ -185,39 +212,48 @@ public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerLi
     private void finishQuiz() {
         if (quizFinished) return;
 
-        quizFinished = true;
-        quizTimer.stop();
+        try {
+            quizFinished = true;
 
-        // Calculate score
-        int correctAnswers = 0;
-
-        for (int i = 0; i < questions.size(); i++) {
-            int userAnswer = userAnswers.get(i);
-            int correctAnswer = questions.get(i).getCorrectAnswerIndex();
-
-            if (userAnswer == correctAnswer) {
-                correctAnswers++;
+            if (quizTimer != null) {
+                quizTimer.stop();
             }
+
+            // Calculate score
+            int correctAnswers = 0;
+
+            for (int i = 0; i < questions.size(); i++) {
+                int userAnswer = userAnswers.get(i);
+                int correctAnswer = questions.get(i).getCorrectAnswerIndex();
+
+                if (userAnswer == correctAnswer) {
+                    correctAnswers++;
+                }
+            }
+
+            // Save result
+            QuizResult result = new QuizResult(pptName, questions.size(), correctAnswers);
+            StorageManager storageManager = new StorageManager(this);
+            storageManager.saveQuizResult(result);
+
+            // Go to result activity
+            Intent intent = new Intent(this, ResultActivity.class);
+            intent.putExtra("correct_answers", correctAnswers);
+            intent.putExtra("total_questions", questions.size());
+            intent.putExtra("ppt_name", pptName);
+            intent.putExtra("percentage", result.getPercentage());
+
+            // Pass questions and answers for review
+            QuizSetupActivity.QuizDataHolder.setQuestions(questions);
+            ResultDataHolder.setUserAnswers(userAnswers);
+
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error finishing quiz: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            finish();
         }
-
-        // Save result
-        QuizResult result = new QuizResult(pptName, questions.size(), correctAnswers);
-        StorageManager storageManager = new StorageManager(this);
-        storageManager.saveQuizResult(result);
-
-        // Go to result activity
-        Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("correct_answers", correctAnswers);
-        intent.putExtra("total_questions", questions.size());
-        intent.putExtra("ppt_name", pptName);
-        intent.putExtra("percentage", result.getPercentage());
-
-        // Pass questions and answers for review
-        QuizSetupActivity.QuizDataHolder.setQuestions(questions);
-        ResultDataHolder.setUserAnswers(userAnswers);
-
-        startActivity(intent);
-        finish();
     }
 
     @Override

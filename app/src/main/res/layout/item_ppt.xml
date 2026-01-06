@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/white"
+        android:gravity="center_vertical">
+
+        <!-- PPT Icon -->
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/card_gradient_teal"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_slideshow"
+                app:tint="@color/white" />
+        </FrameLayout>
+
+        <!-- PPT Info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvPPTName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Presentation.pptx"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvPPTQuizCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5 quizzes taken"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tvPPTAvgScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Avg: 85.5%"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/success_green"
+                android:layout_marginTop="4dp"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <!-- Start Quiz Button -->
+        <Button
+            android:id="@+id/btnStartPPTQuiz"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Start"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/button_rounded"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

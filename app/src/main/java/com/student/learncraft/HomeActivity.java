@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -21,7 +22,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private CardView cardUploadPPT, cardStartQuiz, cardViewProgress;
     private TextView tvWelcome, tvStats;
+    private Button btnLogout;
     private StorageManager storageManager;
+    private UserManager userManager;
 
     private ActivityResultLauncher<Intent> filePickerLauncher;
     private Uri selectedPPTUri;
@@ -34,6 +37,15 @@ public class HomeActivity extends AppCompatActivity {
 
         // Initialize storage manager
         storageManager = new StorageManager(this);
+        userManager = new UserManager(this);
+
+        // Check if user is logged in
+        if (!userManager.isLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         // Initialize views
         initViews();
@@ -51,6 +63,13 @@ public class HomeActivity extends AppCompatActivity {
     private void initViews() {
         tvWelcome = findViewById(R.id.tvWelcome);
         tvStats = findViewById(R.id.tvStats);
+        btnLogout = findViewById(R.id.btnLogout);
+
+        // Display user name
+        User currentUser = userManager.getCurrentUser();
+        if (currentUser != null) {
+            tvWelcome.setText("Welcome, " + currentUser.getFullName() + "!");
+        }
 
         cardUploadPPT = findViewById(R.id.cardUploadPPT);
         cardStartQuiz = findViewById(R.id.cardStartQuiz);
@@ -60,6 +79,7 @@ public class HomeActivity extends AppCompatActivity {
         cardUploadPPT.setOnClickListener(v -> openFilePicker());
         cardStartQuiz.setOnClickListener(v -> startQuiz());
         cardViewProgress.setOnClickListener(v -> viewProgress());
+        btnLogout.setOnClickListener(v -> logout());
     }
 
     private void setupFilePicker() {
@@ -204,5 +224,31 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadStats(); // Refresh stats when returning to home
+    }
+
+    private void logout() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    userManager.logout();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        new AlertDialog.Builder(this)
+                .setTitle("Exit App")
+                .setMessage("Do you want to logout or exit?")
+                .setPositiveButton("Logout", (dialog, which) -> logout())
+                .setNegativeButton("Stay", null)
+                .show();
     }
 }

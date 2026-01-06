@@ -113,8 +113,22 @@ public class QuizSetupActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     progressDialog.dismiss();
 
-                    if (questions.isEmpty()) {
-                        Toast.makeText(this, "❌ Not enough content to generate questions", Toast.LENGTH_LONG).show();
+                    if (questions == null || questions.isEmpty()) {
+                        Toast.makeText(this, "❌ Not enough content to generate questions. PPT needs more text content.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    // IMPORTANT: Validate all questions have options
+                    boolean validQuestions = true;
+                    for (MCQQuestion q : questions) {
+                        if (q.getOptions() == null || q.getOptions().size() < 4) {
+                            validQuestions = false;
+                            break;
+                        }
+                    }
+
+                    if (!validQuestions) {
+                        Toast.makeText(this, "❌ Error: Invalid questions generated. Please try with a different PPT.", Toast.LENGTH_LONG).show();
                         return;
                     }
 
@@ -132,9 +146,10 @@ public class QuizSetupActivity extends AppCompatActivity {
                 });
 
             } catch (Exception e) {
+                e.printStackTrace();
                 runOnUiThread(() -> {
                     progressDialog.dismiss();
-                    Toast.makeText(this, "❌ Error generating questions", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "❌ Error generating questions: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         }).start();

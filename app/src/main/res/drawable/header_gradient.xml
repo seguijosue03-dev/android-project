@@ -1,7 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
-        android:startColor="@color/primary_blue"
-        android:endColor="@color/accent_teal"
-        android:angle="45" />
-    <corners android:radius="20dp"/>
+        android:angle="135"
+        android:startColor="#1A237E"
+        android:centerColor="#1565C0"
+        android:endColor="#1976D2"
+        android:type="linear"
+        android:dither="true" />
+    <corners android:radius="20dp" />
 </shape>

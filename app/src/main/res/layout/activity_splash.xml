@@ -33,9 +33,10 @@
                 android:id="@+id/appLogo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@android:drawable/ic_menu_edit"
-                android:tint="@color/primary"
-                android:contentDescription="App Logo" />
+                android:src="@drawable/learncraft_logo"
+                android:scaleType="fitCenter"
+                android:contentDescription="LearnCraft Logo" />
+
         </FrameLayout>
 
         <!-- App Name -->
@@ -72,6 +73,8 @@
             android:gravity="center">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="📚 PPT"
                 android:textSize="13sp"
                 android:textColor="@color/white"
@@ -80,6 +83,8 @@
                 android:layout_marginEnd="8dp" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="🧠 AI"
                 android:textSize="13sp"
                 android:textColor="@color/white"
@@ -88,6 +93,8 @@
                 android:layout_marginEnd="8dp" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="📝 MCQs"
                 android:textSize="13sp"
                 android:textColor="@color/white"
@@ -108,12 +115,16 @@
         android:gravity="center">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Crafted for Smart Learning"
             android:textSize="12sp"
             android:textColor="@color/white"
             android:alpha="0.55" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Version 1.0"
             android:textSize="11sp"
             android:textColor="@color/white"

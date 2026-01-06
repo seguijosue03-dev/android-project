@@ -68,7 +68,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="🎯 Avg Score\n0%"
+                        android:text="🎯 Keep Learning\nGrow Daily"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -206,6 +206,7 @@
             android:id="@+id/cardViewProgress"
             android:layout_width="match_parent"
             android:layout_height="140dp"
+            android:layout_marginBottom="20dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="6dp"
             app:cardBackgroundColor="@android:color/transparent"
@@ -261,25 +262,6 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- 🔓 Logout Button -->
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="  🪟Logout"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/error_red"
-            android:background="@drawable/logout_blue_button"
-            android:drawableStart="@android:drawable/ic_lock_power_off"
-            android:drawablePadding="10dp"
-            android:gravity="center"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="12dp"
-            android:elevation="4dp"
-            android:textAllCaps="false"/>
-
 
     </LinearLayout>
 

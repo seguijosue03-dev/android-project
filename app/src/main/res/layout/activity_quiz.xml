@@ -116,9 +116,11 @@
                 android:gravity="start|center_vertical"
                 android:padding="16dp"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/card_background"
-                android:textColor="@color/text_primary"
-                android:textAllCaps="false"/>
+                android:background="@drawable/option_button_selector"
+                android:textColor="@drawable/option_text_selector"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null"
+                android:elevation="2dp"/>
 
             <Button
                 android:id="@+id/btnOption2"
@@ -130,9 +132,11 @@
                 android:gravity="start|center_vertical"
                 android:padding="16dp"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/card_background"
-                android:textColor="@color/text_primary"
-                android:textAllCaps="false"/>
+                android:background="@drawable/option_button_selector"
+                android:textColor="@drawable/option_text_selector"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null"
+                android:elevation="2dp"/>
 
             <Button
                 android:id="@+id/btnOption3"
@@ -144,9 +148,11 @@
                 android:gravity="start|center_vertical"
                 android:padding="16dp"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/card_background"
-                android:textColor="@color/text_primary"
-                android:textAllCaps="false"/>
+                android:background="@drawable/option_button_selector"
+                android:textColor="@drawable/option_text_selector"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null"
+                android:elevation="2dp"/>
 
             <Button
                 android:id="@+id/btnOption4"
@@ -158,9 +164,11 @@
                 android:gravity="start|center_vertical"
                 android:padding="16dp"
                 android:layout_marginBottom="24dp"
-                android:background="@drawable/card_background"
-                android:textColor="@color/text_primary"
-                android:textAllCaps="false"/>
+                android:background="@drawable/option_button_selector"
+                android:textColor="@drawable/option_text_selector"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null"
+                android:elevation="2dp"/>
 
         </LinearLayout>
 

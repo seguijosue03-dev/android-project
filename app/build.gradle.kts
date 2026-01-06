@@ -8,7 +8,10 @@ android {
 
     defaultConfig {
         applicationId = "com.student.learncraft"
-        minSdk = 24
+
+        // OPTION 1 FIX (VERY IMPORTANT)
+        minSdk = 26
+
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -26,23 +29,21 @@ android {
         }
     }
 
-    // Apache POI requires Java 11+
+    //  Apache POI requires Java 11+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    // IMPORTANT: Apache POI duplicate META-INF fix
+    //  FIX duplicate META-INF + POI conflicts
     packagingOptions {
         resources {
-            excludes.addAll(
-                listOf(
-                    "META-INF/DEPENDENCIES",
-                    "META-INF/LICENSE",
-                    "META-INF/LICENSE.txt",
-                    "META-INF/NOTICE",
-                    "META-INF/NOTICE.txt"
-                )
+            excludes += setOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt"
             )
         }
     }
@@ -54,13 +55,16 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // Apache POI (PPT / DOCX / XLSX reading)
+    // Apache POI (PPTX reading)
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
-    implementation("org.apache.poi:poi-ooxml-schemas:4.1.2")
+
+    // Required by POI
     implementation("org.apache.xmlbeans:xmlbeans:5.1.1")
     implementation("org.apache.commons:commons-compress:1.21")
     implementation("commons-io:commons-io:2.11.0")
+
+    // JSON
     implementation("com.google.code.gson:gson:2.10.1")
 
     // Charts

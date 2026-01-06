@@ -88,7 +88,7 @@
                 android:id="@+id/tvExplanation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="💡 Paris is the capital and largest city of France."
+                android:text=" Paris is the capital and largest city of France."
                 android:textSize="13sp"
                 android:textColor="@color/text_secondary"
                 android:background="@drawable/explanation_bg"
