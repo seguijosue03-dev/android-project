@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- 🌈 Header Card -->
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- 📂 PPT Info Card (FIXED) -->
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- ⚙️ Question Settings -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
             android:textStyle="bold"
             android:layout_marginBottom="18dp" />
 
-        <!-- 📝 Radio Group -->
+
         <RadioGroup
             android:id="@+id/rgQuestionCount"
             android:layout_width="match_parent"
@@ -167,7 +167,7 @@
                 android:textSize="16sp" />
         </RadioGroup>
 
-        <!-- 🚀 Start Button -->
+
         <Button
             android:id="@+id/btnStartQuiz"
             android:layout_width="match_parent"
@@ -175,7 +175,7 @@
             android:layout_marginTop="36dp"
             android:background="@drawable/button_gradient"
             android:elevation="6dp"
-            android:text="Start Quiz 🚀"
+            android:text="Start Quiz "
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
