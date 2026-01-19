@@ -27,36 +27,39 @@
             android:layout_height="150dp"
             android:background="@drawable/glass_card"
             android:elevation="16dp"
+            android:layout_marginBottom="20sp"
             android:padding="28dp">
 
             <ImageView
                 android:id="@+id/appLogo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/learncraft_logo"
+                android:src="@drawable/lc_logo"
                 android:scaleType="fitCenter"
-                android:contentDescription="LearnCraft Logo" />
-
+                android:layout_marginBottom="0dp"
+                android:contentDescription="Lc logo" />
         </FrameLayout>
 
         <!-- App Name -->
+
+        <!-- Tagline -->
         <TextView
             android:id="@+id/appName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="LearnCraft"
-            android:textSize="46sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="25sp"
             android:letterSpacing="0.08"
-            android:fontFamily="sans-serif-medium" />
+            android:text="LearnCraft"
+            android:textColor="@color/white"
+            android:textSize="46sp"
+            android:textStyle="bold" />
 
-        <!-- Tagline -->
         <TextView
             android:id="@+id/tagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="200dp"
             android:layout_marginTop="10dp"
             android:text="Turn Knowledge into Intelligence"
             android:textSize="17sp"
@@ -79,8 +82,9 @@
                 android:textSize="13sp"
                 android:textColor="@color/white"
                 android:padding="8dp"
+
                 android:background="@drawable/chip_bg"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="9dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -114,10 +118,21 @@
         android:orientation="vertical"
         android:gravity="center">
 
+        <!-- 🔰 Marwadi University Logo (BOTTOM) -->
+        <ImageView
+            android:id="@+id/imgMarwadiLogo"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/marwadi_university_logo"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="150dp"
+            android:contentDescription="Marwadi University Logo" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Crafted for Smart Learning"
+            android:text="Made by: Segui and Daniel Sabri"
             android:textSize="12sp"
             android:textColor="@color/white"
             android:alpha="0.55" />
