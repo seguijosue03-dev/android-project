@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.bottom_navigation);
 
-        // Set up bottom navigation
+        // Bottom navigation listener
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
 
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             if (itemId == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
             } else if (itemId == R.id.nav_quiz) {
-                selectedFragment = new QuizFragment(); // Show QuizFragment
+                selectedFragment = new QuizFragment();
             } else if (itemId == R.id.nav_analytics) {
                 selectedFragment = new AnalyticsFragment();
             } else if (itemId == R.id.nav_profile) {
@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (selectedFragment != null) {
-                getSupportFragmentManager().beginTransaction()
+                getSupportFragmentManager()
+                        .beginTransaction()
                         .replace(R.id.fragment_container, selectedFragment)
                         .commit();
             }
@@ -52,9 +53,20 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // Load default fragment (Home)
+        // 🔥 HANDLE REDIRECT FROM RESULT ACTIVITY
         if (savedInstanceState == null) {
-            bottomNav.setSelectedItemId(R.id.nav_home);
+            String openFragment = getIntent().getStringExtra("open_fragment");
+
+            if ("home".equals(openFragment)) {
+                // FORCE HOME
+                bottomNav.setSelectedItemId(R.id.nav_home);
+
+                // CLEAR EXTRA SO IT DOESN'T REPEAT
+                getIntent().removeExtra("open_fragment");
+            } else {
+                // Default behavior
+                bottomNav.setSelectedItemId(R.id.nav_home);
+            }
         }
     }
 

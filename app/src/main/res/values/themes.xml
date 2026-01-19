@@ -3,7 +3,7 @@
 
     <style
         name="Base.Theme.LearnCraft"
-        parent="Theme.MaterialComponents.DayNight.NoActionBar"
+        parent="Theme.MaterialComponents.Light.NoActionBar"
     >
 
         <!-- ANDROID 12+ SPLASH OVERRIDE -->

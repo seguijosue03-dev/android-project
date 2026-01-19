@@ -44,52 +44,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Theme Section -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🎨 Theme"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="12dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
-
-                <RadioGroup
-                    android:id="@+id/rgTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="@color/white">
-
-                    <RadioButton
-                        android:id="@+id/rbLight"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="🌙 drak mode"
-                        android:textSize="16sp"
-                        android:padding="12dp"
-                        android:checked="true" />
-
-                    <RadioButton
-                        android:id="@+id/rbDark"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="☀️ light mode"
-                        android:textSize="16sp"
-                        android:padding="12dp" />
-
-                </RadioGroup>
-
-            </androidx.cardview.widget.CardView>
-
             <!-- App Settings -->
             <TextView
                 android:layout_width="wrap_content"
@@ -293,8 +247,8 @@
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@android:drawable/ic_menu_edit"
-                        app:tint="@color/primary_blue"
+                        android:src="@drawable/learncraft_logo"
+
                         android:layout_marginBottom="12dp" />
 
                     <TextView
@@ -325,9 +279,6 @@
                         android:background="@drawable/card_background"
                         android:paddingStart="24dp"
                         android:paddingEnd="24dp" />
-
-
-
 
                 </LinearLayout>
 

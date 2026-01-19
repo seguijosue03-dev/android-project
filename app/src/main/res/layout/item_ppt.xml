@@ -70,18 +70,33 @@
 
         </LinearLayout>
 
-        <!-- Start Quiz Button -->
-        <Button
-            android:id="@+id/btnStartPPTQuiz"
+        <!-- Action Buttons -->
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="Start"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:background="@drawable/button_rounded"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnStartPPTQuiz"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:text="Start"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:background="@drawable/button_rounded"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnDeletePPT"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:text="🗑️"
+                android:textSize="16sp"
+                android:background="@drawable/logout_blue_button" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

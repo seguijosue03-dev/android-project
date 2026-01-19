@@ -28,7 +28,8 @@ public class ReviewAnswersActivity extends AppCompatActivity {
 
         // Get data
         questions = QuizSetupActivity.QuizDataHolder.getQuestions();
-        userAnswers = QuizActivity.ResultDataHolder.getUserAnswers();
+        userAnswers = ResultDataHolder.getUserAnswers();
+
 
         // Initialize views
         tvTitle = findViewById(R.id.tvTitle);

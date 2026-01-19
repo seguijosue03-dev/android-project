@@ -5,15 +5,11 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
 
 public class ResultActivity extends AppCompatActivity {
 
     private TextView tvScore, tvPercentage, tvCorrect, tvWrong, tvMessage;
     private Button btnReviewAnswers, btnHome, btnRetake;
-    private RecyclerView rvAnswerReview;
 
     private int correctAnswers;
     private int totalQuestions;
@@ -31,10 +27,7 @@ public class ResultActivity extends AppCompatActivity {
         percentage = getIntent().getFloatExtra("percentage", 0f);
         pptName = getIntent().getStringExtra("ppt_name");
 
-        // Initialize views
         initViews();
-
-        // Display results
         displayResults();
     }
 
@@ -55,17 +48,11 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void displayResults() {
-        // Set score
-        tvScore.setText(String.format("%d/%d", correctAnswers, totalQuestions));
-
-        // Set percentage with animation
+        tvScore.setText(correctAnswers + "/" + totalQuestions);
         tvPercentage.setText(String.format("%.1f%%", percentage));
-
-        // Set correct/wrong
         tvCorrect.setText("✅ Correct: " + correctAnswers);
         tvWrong.setText("❌ Wrong: " + (totalQuestions - correctAnswers));
 
-        // Set motivational message
         String message;
         if (percentage >= 90) {
             message = "🎉 Outstanding! You're a star!";
@@ -94,8 +81,18 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void goHome() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent = new Intent(this, MainActivity.class);
+
+        // 🔥 FORCE HOME FRAGMENT
+        intent.putExtra("open_fragment", "home");
+
+        // 🔥 CLEAR STACK (VERY IMPORTANT)
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
+
         startActivity(intent);
         finish();
     }

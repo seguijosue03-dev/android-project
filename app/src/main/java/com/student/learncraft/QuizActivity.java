@@ -1,10 +1,10 @@
 package com.student.learncraft;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +17,10 @@ import java.util.List;
 public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerListener {
 
     private TextView tvQuestion, tvQuestionNumber, tvTimer;
-    private Button btnOption1, btnOption2, btnOption3, btnOption4, btnNext;
+    private TextView tvOption1, tvOption2, tvOption3, tvOption4;
+    private CheckBox checkOption1, checkOption2, checkOption3, checkOption4;
+    private LinearLayout layoutOption1, layoutOption2, layoutOption3, layoutOption4;
+    private Button btnNext, btnPrevious;
     private ProgressBar progressBar;
 
     private List<MCQQuestion> questions;
@@ -34,42 +37,28 @@ public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        try {
-            // Get data from intent
-            pptName = getIntent().getStringExtra("ppt_name");
-            int questionCount = getIntent().getIntExtra("question_count", 20);
-            int timeMinutes = getIntent().getIntExtra("time_minutes", 20);
+        pptName = getIntent().getStringExtra("ppt_name");
+        int timeMinutes = getIntent().getIntExtra("time_minutes", 20);
 
-            // Get questions from holder
-            questions = QuizSetupActivity.QuizDataHolder.getQuestions();
+        questions = QuizSetupActivity.QuizDataHolder.getQuestions();
 
-            if (questions == null || questions.isEmpty()) {
-                Toast.makeText(this, "❌ Error: No questions available", Toast.LENGTH_LONG).show();
-                finish();
-                return;
-            }
-
-            // Initialize user answers list
-            userAnswers = new ArrayList<>();
-            for (int i = 0; i < questions.size(); i++) {
-                userAnswers.add(-1); // -1 means not answered
-            }
-
-            // Initialize views
-            initViews();
-
-            // Initialize and start timer
-            quizTimer = new QuizTimer(timeMinutes, this);
-            quizTimer.start();
-
-            // Load first question
-            loadQuestion();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "❌ Error starting quiz: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        if (questions == null || questions.isEmpty()) {
+            Toast.makeText(this, "❌ No questions available", Toast.LENGTH_LONG).show();
             finish();
+            return;
         }
+
+        userAnswers = new ArrayList<>();
+        for (int i = 0; i < questions.size(); i++) {
+            userAnswers.add(-1);
+        }
+
+        initViews();
+
+        quizTimer = new QuizTimer(timeMinutes, this);
+        quizTimer.start();
+
+        loadQuestion();
     }
 
     private void initViews() {
@@ -78,238 +67,155 @@ public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerLi
         tvTimer = findViewById(R.id.tvTimer);
         progressBar = findViewById(R.id.progressBar);
 
-        btnOption1 = findViewById(R.id.btnOption1);
-        btnOption2 = findViewById(R.id.btnOption2);
-        btnOption3 = findViewById(R.id.btnOption3);
-        btnOption4 = findViewById(R.id.btnOption4);
-        btnNext = findViewById(R.id.btnNext);
+        layoutOption1 = findViewById(R.id.layoutOption1);
+        layoutOption2 = findViewById(R.id.layoutOption2);
+        layoutOption3 = findViewById(R.id.layoutOption3);
+        layoutOption4 = findViewById(R.id.layoutOption4);
 
-        // Set option click listeners
-        btnOption1.setOnClickListener(v -> selectOption(0, btnOption1));
-        btnOption2.setOnClickListener(v -> selectOption(1, btnOption2));
-        btnOption3.setOnClickListener(v -> selectOption(2, btnOption3));
-        btnOption4.setOnClickListener(v -> selectOption(3, btnOption4));
+        checkOption1 = findViewById(R.id.checkOption1);
+        checkOption2 = findViewById(R.id.checkOption2);
+        checkOption3 = findViewById(R.id.checkOption3);
+        checkOption4 = findViewById(R.id.checkOption4);
+
+        tvOption1 = findViewById(R.id.tvOption1);
+        tvOption2 = findViewById(R.id.tvOption2);
+        tvOption3 = findViewById(R.id.tvOption3);
+        tvOption4 = findViewById(R.id.tvOption4);
+
+        btnNext = findViewById(R.id.btnNext);
+        btnPrevious = findViewById(R.id.btnPrevious);
+
+        layoutOption1.setOnClickListener(v -> selectOption(0));
+        layoutOption2.setOnClickListener(v -> selectOption(1));
+        layoutOption3.setOnClickListener(v -> selectOption(2));
+        layoutOption4.setOnClickListener(v -> selectOption(3));
 
         btnNext.setOnClickListener(v -> nextQuestion());
+        btnPrevious.setOnClickListener(v -> previousQuestion());
 
-        // Update progress bar
         progressBar.setMax(questions.size());
-        progressBar.setProgress(0);
     }
 
     private void loadQuestion() {
-        if (currentQuestionIndex >= questions.size()) {
-            finishQuiz();
-            return;
+        MCQQuestion q = questions.get(currentQuestionIndex);
+
+        tvQuestionNumber.setText(
+                "Question " + (currentQuestionIndex + 1) + " of " + questions.size()
+        );
+
+        progressBar.setProgress(currentQuestionIndex + 1);
+        tvQuestion.setText(q.getQuestion());
+
+        List<String> opts = q.getOptions();
+        tvOption1.setText("A. " + opts.get(0));
+        tvOption2.setText("B. " + opts.get(1));
+        tvOption3.setText("C. " + opts.get(2));
+        tvOption4.setText("D. " + opts.get(3));
+
+        resetOptionStyles();
+        selectedOptionIndex = userAnswers.get(currentQuestionIndex);
+
+        if (selectedOptionIndex != -1) {
+            highlightSelectedOption(selectedOptionIndex);
         }
 
-        try {
-            MCQQuestion question = questions.get(currentQuestionIndex);
+        btnPrevious.setEnabled(currentQuestionIndex > 0);
 
-            // Validate question
-            if (question == null || question.getOptions() == null || question.getOptions().size() < 4) {
-                Toast.makeText(this, "Error loading question. Skipping...", Toast.LENGTH_SHORT).show();
-                currentQuestionIndex++;
-                loadQuestion();
-                return;
-            }
-
-            // Update question number
-            tvQuestionNumber.setText(String.format("Question %d of %d",
-                    currentQuestionIndex + 1, questions.size()));
-
-            // Update progress
-            progressBar.setProgress(currentQuestionIndex + 1);
-
-            // Set question text
-            tvQuestion.setText(question.getQuestion());
-
-            // Set options
-            List<String> options = question.getOptions();
-            btnOption1.setText("A. " + options.get(0));
-            btnOption2.setText("B. " + options.get(1));
-            btnOption3.setText("C. " + options.get(2));
-            btnOption4.setText("D. " + options.get(3));
-
-            // Reset option styles
-            resetOptionStyles();
-
-            // If user already answered this question, show their selection
-            int previousAnswer = userAnswers.get(currentQuestionIndex);
-            if (previousAnswer != -1) {
-                selectedOptionIndex = previousAnswer;
-                highlightSelectedOption(previousAnswer);
-            } else {
-                selectedOptionIndex = -1;
-            }
-
-            // Update next button text
-            if (currentQuestionIndex == questions.size() - 1) {
-                btnNext.setText("Finish Quiz");
-            } else {
-                btnNext.setText("Next Question");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            finish();
-        }
+        btnNext.setText(
+                currentQuestionIndex == questions.size() - 1
+                        ? "Finish Quiz"
+                        : "Next Question"
+        );
     }
 
-    private void selectOption(int optionIndex, Button selectedButton) {
-        // Reset all options first
+    private void selectOption(int index) {
         resetOptionStyles();
-
-        // Highlight selected option
-        selectedOptionIndex = optionIndex;
-        highlightSelectedOption(optionIndex);
-
-        // Save user's answer
-        userAnswers.set(currentQuestionIndex, optionIndex);
+        selectedOptionIndex = index;
+        userAnswers.set(currentQuestionIndex, index);
+        highlightSelectedOption(index);
     }
 
     private void highlightSelectedOption(int index) {
-        Button[] buttons = {btnOption1, btnOption2, btnOption3, btnOption4};
+        LinearLayout[] layouts = {layoutOption1, layoutOption2, layoutOption3, layoutOption4};
+        CheckBox[] checks = {checkOption1, checkOption2, checkOption3, checkOption4};
 
-        // Set selected state for the chosen button
-        if (index >= 0 && index < buttons.length) {
-            buttons[index].setSelected(true);
+        for (int i = 0; i < checks.length; i++) {
+            checks[i].setChecked(i == index);
+            layouts[i].setSelected(i == index);
         }
     }
 
     private void resetOptionStyles() {
-        Button[] buttons = {btnOption1, btnOption2, btnOption3, btnOption4};
+        CheckBox[] checks = {checkOption1, checkOption2, checkOption3, checkOption4};
+        LinearLayout[] layouts = {layoutOption1, layoutOption2, layoutOption3, layoutOption4};
 
-        // Reset selected state for all buttons
-        for (Button btn : buttons) {
-            btn.setSelected(false);
+        for (int i = 0; i < checks.length; i++) {
+            checks[i].setChecked(false);
+            layouts[i].setSelected(false);
         }
     }
 
     private void nextQuestion() {
-        try {
-            // Check if user selected an option
-            if (selectedOptionIndex == -1) {
-                Toast.makeText(this, "⚠️ Please select an option", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (selectedOptionIndex == -1) {
+            Toast.makeText(this, "Select an option", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            // Move to next question
-            currentQuestionIndex++;
-
-            if (currentQuestionIndex < questions.size()) {
-                loadQuestion();
-            } else {
-                finishQuiz();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        if (currentQuestionIndex == questions.size() - 1) {
             finishQuiz();
+        } else {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+    }
+
+    private void previousQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
         }
     }
 
     private void finishQuiz() {
         if (quizFinished) return;
+        quizFinished = true;
 
-        try {
-            quizFinished = true;
+        if (quizTimer != null) quizTimer.stop();
 
-            if (quizTimer != null) {
-                quizTimer.stop();
+        int correct = 0;
+        for (int i = 0; i < questions.size(); i++) {
+            if (userAnswers.get(i) == questions.get(i).getCorrectAnswerIndex()) {
+                correct++;
             }
-
-            // Calculate score
-            int correctAnswers = 0;
-
-            for (int i = 0; i < questions.size(); i++) {
-                int userAnswer = userAnswers.get(i);
-                int correctAnswer = questions.get(i).getCorrectAnswerIndex();
-
-                if (userAnswer == correctAnswer) {
-                    correctAnswers++;
-                }
-            }
-
-            // Save result
-            QuizResult result = new QuizResult(pptName, questions.size(), correctAnswers);
-            StorageManager storageManager = new StorageManager(this);
-            storageManager.saveQuizResult(result);
-
-            // Go to result activity
-            Intent intent = new Intent(this, ResultActivity.class);
-            intent.putExtra("correct_answers", correctAnswers);
-            intent.putExtra("total_questions", questions.size());
-            intent.putExtra("ppt_name", pptName);
-            intent.putExtra("percentage", result.getPercentage());
-
-            // Pass questions and answers for review
-            QuizSetupActivity.QuizDataHolder.setQuestions(questions);
-            ResultDataHolder.setUserAnswers(userAnswers);
-
-            startActivity(intent);
-            finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error finishing quiz: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            finish();
         }
+
+        ResultDataHolder.setUserAnswers(userAnswers);
+
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("correct_answers", correct);
+        intent.putExtra("total_questions", questions.size());
+        intent.putExtra("ppt_name", pptName);
+        startActivity(intent);
+        finish();
     }
 
     @Override
-    public void onTick(long millisUntilFinished, String formattedTime) {
-        tvTimer.setText("⏱️ " + formattedTime);
+    public void onTick(long ms, String time) {
+        tvTimer.setText("⏱️ " + time);
 
-        // Change color if time is low
+        if (quizTimer.isTimeLow()) {
+            tvTimer.setTextColor(ContextCompat.getColor(this, R.color.warning_yellow));
+        }
         if (quizTimer.isTimeCritical()) {
             tvTimer.setTextColor(ContextCompat.getColor(this, R.color.error_red));
-        } else if (quizTimer.isTimeLow()) {
-            tvTimer.setTextColor(ContextCompat.getColor(this, R.color.warning_yellow));
         }
     }
 
     @Override
     public void onFinish() {
-        // Time's up!
-        new AlertDialog.Builder(this)
-                .setTitle("⏰ Time's Up!")
-                .setMessage("The quiz time has ended. Your answers will be submitted.")
-                .setCancelable(false)
-                .setPositiveButton("OK", (dialog, which) -> finishQuiz())
-                .show();
+        finishQuiz();
     }
 
-    @Override
-    public void onBackPressed() {
-        // Confirm before exiting
-        new AlertDialog.Builder(this)
-                .setTitle("Exit Quiz?")
-                .setMessage("Are you sure you want to exit? Your progress will be lost.")
-                .setPositiveButton("Exit", (dialog, which) -> {
-                    quizTimer.stop();
-                    super.onBackPressed();
-                })
-                .setNegativeButton("Continue", null)
-                .show();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (quizTimer != null && !quizFinished) {
-            quizTimer.pause();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (quizTimer != null && !quizFinished) {
-            quizTimer.resume();
-        }
-    }
-
-    // Static holder for passing user answers
     public static class ResultDataHolder {
         private static List<Integer> userAnswers;
 
@@ -319,10 +225,6 @@ public class QuizActivity extends AppCompatActivity implements QuizTimer.TimerLi
 
         public static List<Integer> getUserAnswers() {
             return userAnswers;
-        }
-
-        public static void clear() {
-            userAnswers = null;
         }
     }
 }

@@ -132,6 +132,16 @@ public class QuizFragment extends Fragment {
 
             selectedPPTName = fileName;
 
+            // IMPORTANT: Take persistent permission
+            try {
+                requireContext().getContentResolver().takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             PPTReader pptReader = new PPTReader(requireContext());
 
             if (pptReader.isValidPPT(uri)) {
@@ -273,20 +283,18 @@ public class QuizFragment extends Fragment {
                     holder.tvAvgScore.setVisibility(View.GONE);
                 }
 
-                // Start quiz button - NOW WORKS!
+                // Start quiz button
                 holder.btnStartQuiz.setOnClickListener(v -> {
                     try {
-                        // Get the URI from stored PPT info
                         String uriString = pptInfo.getUriString();
 
                         if (uriString == null || uriString.isEmpty()) {
                             Toast.makeText(requireContext(),
-                                    "⚠️ Please re-upload this PPT from the Upload button above",
-                                    Toast.LENGTH_LONG).show();
+                                    "⚠️ Please re-upload this PPT",
+                                    Toast.LENGTH_SHORT).show();
                             return;
                         }
 
-                        // Navigate to QuizSetupActivity
                         Intent intent = new Intent(requireActivity(), QuizSetupActivity.class);
                         intent.putExtra("ppt_uri", uriString);
                         intent.putExtra("ppt_name", pptInfo.getFileName());
@@ -295,10 +303,40 @@ public class QuizFragment extends Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(requireContext(),
-                                "⚠️ Error opening quiz. Please re-upload this PPT.",
-                                Toast.LENGTH_LONG).show();
+                                "⚠️ Error. Please re-upload this PPT.",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                // Delete button
+                holder.btnDelete.setOnClickListener(v -> {
+                    new android.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Delete PPT")
+                            .setMessage("Delete " + pptName + "?")
+                            .setPositiveButton("Delete", (dialog, which) -> {
+                                pptInfoList.remove(position);
+                                storageManager.savePPTInfo(pptInfo); // This will remove it
+
+                                // Actually delete from storage
+                                List<PPTInfo> allPPTs = storageManager.getAllPPTInfo();
+                                allPPTs.removeIf(p -> p.getFileName().equals(pptName));
+                                // Save updated list
+                                android.content.SharedPreferences prefs = requireContext().getSharedPreferences("LearnCraftPrefs", android.content.Context.MODE_PRIVATE);
+                                prefs.edit().putString("ppt_info_list", new com.google.gson.Gson().toJson(allPPTs)).apply();
+
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, pptInfoList.size());
+
+                                Toast.makeText(requireContext(), "✅ PPT deleted", Toast.LENGTH_SHORT).show();
+
+                                if (pptInfoList.isEmpty()) {
+                                    loadPPTList();
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                });
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -311,7 +349,7 @@ public class QuizFragment extends Fragment {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvPPTName, tvQuizCount, tvAvgScore;
-            Button btnStartQuiz;
+            Button btnStartQuiz, btnDelete;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -319,6 +357,7 @@ public class QuizFragment extends Fragment {
                 tvQuizCount = itemView.findViewById(R.id.tvPPTQuizCount);
                 tvAvgScore = itemView.findViewById(R.id.tvPPTAvgScore);
                 btnStartQuiz = itemView.findViewById(R.id.btnStartPPTQuiz);
+                btnDelete = itemView.findViewById(R.id.btnDeletePPT);
             }
         }
     }

@@ -2,10 +2,12 @@ package com.student.learncraft;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -43,12 +45,39 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> attemptLogin());
         tvRegister.setOnClickListener(v -> goToRegister());
 
-        // Long press on admin hint to reset admin account
-        tvAdminHint.setOnLongClickListener(v -> {
-            userManager.resetAdminAccount();
-            Toast.makeText(this, "✅ Admin account reset! Use: admin@learncraft.com / Admin@2025", Toast.LENGTH_LONG).show();
-            return true;
-        });
+        // MULTI TAP on app name to force create admin
+        TextView tvAppName = findViewById(R.id.tvAppName);
+        if (tvAppName != null) {
+            tvAppName.setOnClickListener(new View.OnClickListener() {
+                private int clickCount = 0;
+                private long lastClickTime = 0;
+
+                @Override
+                public void onClick(View v) {
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - lastClickTime < 500) {
+                        clickCount++;
+                    } else {
+                        clickCount = 1;
+                    }
+                    lastClickTime = currentTime;
+
+                    if (clickCount == 5) {
+                        forceCreateAdmin();
+                        clickCount = 0;
+                    }
+                }
+            });
+        }
+    }
+
+    private void forceCreateAdmin() {
+        userManager.resetAdminAccount();
+        Toast.makeText(
+                this,
+                "✅ Admin Created!\nEmail: admin@learncraft.com\nPassword: admin2025",
+                Toast.LENGTH_LONG
+        ).show();
     }
 
     private void attemptLogin() {
@@ -72,24 +101,30 @@ public class LoginActivity extends AppCompatActivity {
         User user = userManager.login(email, password);
 
         if (user != null) {
-            Toast.makeText(this, "✅ Welcome, " + user.getFullName() + "!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    this,
+                    "✅ Welcome, " + user.getFullName() + "!",
+                    Toast.LENGTH_SHORT
+            ).show();
             navigateBasedOnRole();
         } else {
-            Toast.makeText(this, "❌ Invalid email or password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    this,
+                    "❌ Invalid email or password",
+                    Toast.LENGTH_SHORT
+            ).show();
         }
     }
 
     private void navigateBasedOnRole() {
         User currentUser = userManager.getCurrentUser();
-
         if (currentUser == null) return;
 
         Intent intent;
-
         if (currentUser.isAdmin()) {
             intent = new Intent(this, AdminDashboardActivity.class);
         } else {
-            intent = new Intent(this, MainActivity.class); // Changed to MainActivity
+            intent = new Intent(this, MainActivity.class);
         }
 
         startActivity(intent);
@@ -97,7 +132,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToRegister() {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, RegisterActivity.class));
     }
 }

@@ -106,6 +106,16 @@ public class HomeFragment extends Fragment {
         selectedPPTName = fileName;
         selectedPPTUri = uri;
 
+        // IMPORTANT: Take persistent permission
+        try {
+            requireContext().getContentResolver().takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         PPTReader pptReader = new PPTReader(requireContext());
 
         if (pptReader.isValidPPT(uri)) {
