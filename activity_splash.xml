@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gradient">
+
+    <!-- Soft Glow Background Circle -->
+    <View
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/glow_circle"
+        android:alpha="0.35" />
+
+    <!-- Main Center Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
+
+        <!-- Glass Card Logo Holder -->
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="@drawable/glass_card"
+            android:elevation="16dp"
+            android:padding="28dp">
+
+            <ImageView
+                android:id="@+id/appLogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_slideshow"
+                android:tint="@color/primary_blue"
+                android:contentDescription="App Logo" />
+        </FrameLayout>
+
+        <!-- App Name -->
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="LearnCraft"
+            android:textSize="46sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:letterSpacing="0.08"
+            android:fontFamily="sans-serif-medium" />
+
+        <!-- Tagline -->
+        <TextView
+            android:id="@+id/tagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Turn Knowledge into Intelligence"
+            android:textSize="17sp"
+            android:textColor="@color/white"
+            android:alpha="0.85"
+            android:fontFamily="sans-serif-light" />
+
+        <!-- Feature Chips -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📚 PPT"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:padding="8dp"
+                android:background="@drawable/chip_bg"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🧠 AI"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:padding="8dp"
+                android:background="@drawable/chip_bg"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📝 MCQs"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:padding="8dp"
+                android:background="@drawable/chip_bg" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Bottom Branding -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crafted for Smart Learning"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:alpha="0.55" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Version 1.0"
+            android:textSize="11sp"
+            android:textColor="@color/white"
+            android:alpha="0.4"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+</RelativeLayout>
