@@ -2,214 +2,122 @@ package com.student.learncraft;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.security.NoSuchAlgorithmException;
 
 public class UserManager {
 
-    private static final String PREF_NAME = "LearnCraftUsers";
-    private static final String KEY_USERS = "users_list";
-    private static final String KEY_CURRENT_USER = "current_user";
-    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
+    private static final String PREF_NAME = "UserSession";
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+    private static final String KEY_USER_EMAIL = "userEmail";
+    private static final String KEY_USER_NAME = "userName";
+    private static final String KEY_USER_ROLE = "userRole";
 
-    // 🔐 ADMIN CREDENTIALS (WORKING)
-    public static final String ADMIN_EMAIL = "admin@learncraft.com";
-    public static final String ADMIN_PASSWORD = "Admin@123";
-
-    private final SharedPreferences preferences;
-    private final Gson gson;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+    private Context context;
+    private DatabaseHelper dbHelper;
 
     public UserManager(Context context) {
-        preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        gson = new Gson();
-        ensureAdminExists();
+        this.context = context;
+        this.pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        this.editor = pref.edit();
+        this.dbHelper = new DatabaseHelper(context);
     }
 
-    /* ================= LOGIN ================= */
+    // --- 1. REGISTER ---
+    public boolean registerUser(String fullName, String email, String password) {
+        if (dbHelper.checkUser(email, hashPassword(password))) {
+            return false;
+        }
+        User user = new User(fullName, email, hashPassword(password), "STUDENT");
+        return dbHelper.registerUser(user);
+    }
 
+    // --- 2. LOGIN ---
     public User login(String email, String password) {
-        String hashed = hashPassword(password);
-
-        for (User user : getAllUsers()) {
-            if (user.getEmail().equalsIgnoreCase(email)
-                    && user.getPassword().equals(hashed)) {
-
-                setCurrentUser(user);
-                setLoggedIn(true);
+        String securePass = hashPassword(password);
+        if (dbHelper.checkUser(email, securePass)) {
+            User user = dbHelper.getUserByEmail(email);
+            if (user != null) {
+                createSession(user.getFullName(), email, user.getRole());
                 return user;
             }
         }
         return null;
     }
 
-    public void logout() {
-        preferences.edit()
-                .remove(KEY_CURRENT_USER)
-                .putBoolean(KEY_IS_LOGGED_IN, false)
-                .apply();
+    // --- 3. UPDATE USER (🔥 Fixes ProfileFragment Error) ---
+    public boolean updateUser(User user) {
+        // If the user is setting a new password, we must hash it before sending to DB
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            user.setPassword(hashPassword(user.getPassword()));
+        }
+
+        boolean success = dbHelper.updateUser(user);
+
+        // If DB update worked, update the local session too so the app feels responsive
+        if (success) {
+            createSession(user.getFullName(), user.getEmail(), user.getRole());
+        }
+        return success;
+    }
+
+    // --- 4. ADMIN SETUP ---
+    public void resetAdminAccount() {
+        String adminEmail = "admin@learncraft.com";
+        String adminPass = "Admin@123";
+        User existingAdmin = dbHelper.getUserByEmail(adminEmail);
+        if (existingAdmin == null) {
+            User admin = new User("Administrator", adminEmail, hashPassword(adminPass), "ADMIN");
+            dbHelper.registerUser(admin);
+        }
+    }
+
+    // --- SESSION HELPERS ---
+    public void createSession(String name, String email, String role) {
+        editor.putBoolean(KEY_IS_LOGGED_IN, true);
+        editor.putString(KEY_USER_NAME, name);
+        editor.putString(KEY_USER_EMAIL, email);
+        editor.putString(KEY_USER_ROLE, role);
+        editor.apply();
     }
 
     public boolean isLoggedIn() {
-        return preferences.getBoolean(KEY_IS_LOGGED_IN, false);
+        return pref.getBoolean(KEY_IS_LOGGED_IN, false);
+    }
+
+    public void logout() {
+        editor.clear();
+        editor.apply();
     }
 
     public User getCurrentUser() {
-        String json = preferences.getString(KEY_CURRENT_USER, null);
-        return json == null ? null : gson.fromJson(json, User.class);
+        if (!isLoggedIn()) return null;
+        String name = pref.getString(KEY_USER_NAME, null);
+        String email = pref.getString(KEY_USER_EMAIL, null);
+        String role = pref.getString(KEY_USER_ROLE, null);
+        // Note: Password is empty here for security.
+        return new User(0, name, email, "", role);
     }
 
-    /* ================= USERS ================= */
-
-    public boolean registerUser(String fullName, String email, String password) {
-        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) return false;
-        if (isEmailExists(email)) return false;
-
-        User user = new User(
-                UUID.randomUUID().toString(),
-                fullName,
-                email,
-                hashPassword(password),
-                "STUDENT"
-        );
-
-        List<User> users = getAllUsers();
-        users.add(user);
-        saveUsers(users);
-        return true;
-    }
-
-    public List<User> getAllUsers() {
-        String json = preferences.getString(KEY_USERS, null);
-        if (json == null) return new ArrayList<>();
-
-        Type type = new TypeToken<List<User>>() {}.getType();
-        List<User> users = gson.fromJson(json, type);
-        return users != null ? users : new ArrayList<>();
-    }
-
-    /* ================= UPDATE USER (🔥 FIX) ================= */
-
-    public boolean updateUser(User updatedUser) {
-        List<User> users = getAllUsers();
-
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getUserId().equals(updatedUser.getUserId())) {
-                users.set(i, updatedUser);
-                saveUsers(users);
-
-                // If updating current user, update session
-                User current = getCurrentUser();
-                if (current != null && current.getUserId().equals(updatedUser.getUserId())) {
-                    setCurrentUser(updatedUser);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /* ================= ADMIN ================= */
-
-    private void ensureAdminExists() {
-        List<User> users = getAllUsers();
-
-        // 🔥 REMOVE ALL OLD ADMINS (important)
-        users.removeIf(User::isAdmin);
-
-        // ✅ CREATE FRESH ADMIN (HASHED CORRECTLY)
-        User admin = new User(
-                UUID.randomUUID().toString(),
-                "Administrator",
-                ADMIN_EMAIL,
-                hashPassword(ADMIN_PASSWORD),
-                "ADMIN"
-        );
-
-        users.add(admin);
-        saveUsers(users);
-    }
-
-
-    public void resetAdminAccount() {
-        List<User> users = getAllUsers();
-        users.removeIf(User::isAdmin);
-
-        User admin = new User(
-                UUID.randomUUID().toString(),
-                "Administrator",
-                ADMIN_EMAIL,
-                hashPassword(ADMIN_PASSWORD),
-                "ADMIN"
-        );
-
-        users.add(admin);
-        saveUsers(users);
-    }
-
-    public int getTotalStudents() {
-        int count = 0;
-        for (User user : getAllUsers()) {
-            if (user.isStudent()) count++;
-        }
-        return count;
-    }
-
-    public boolean deleteUser(String userId) {
-        List<User> users = getAllUsers();
-
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            if (user.getUserId().equals(userId) && !user.isAdmin()) {
-                users.remove(i);
-                saveUsers(users);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /* ================= HELPERS ================= */
-
-    private boolean isEmailExists(String email) {
-        for (User user : getAllUsers()) {
-            if (user.getEmail().equalsIgnoreCase(email)) return true;
-        }
-        return false;
-    }
-
-    private void saveUsers(List<User> users) {
-        preferences.edit()
-                .putString(KEY_USERS, gson.toJson(users))
-                .apply();
-    }
-
-    private void setCurrentUser(User user) {
-        preferences.edit()
-                .putString(KEY_CURRENT_USER, gson.toJson(user))
-                .apply();
-    }
-
-    private void setLoggedIn(boolean value) {
-        preferences.edit()
-                .putBoolean(KEY_IS_LOGGED_IN, value)
-                .apply();
+    public boolean isAdmin() {
+        String role = pref.getString(KEY_USER_ROLE, "STUDENT");
+        return "ADMIN".equalsIgnoreCase(role);
     }
 
     private String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes());
-
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hash) sb.append(String.format("%02x", b));
-            return sb.toString();
-
-        } catch (Exception e) {
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
             return password;
         }
     }

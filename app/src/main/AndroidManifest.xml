@@ -9,12 +9,13 @@
         android:maxSdkVersion="32" />
 
     <application
+
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/learncraft_logo"
+        android:icon="@drawable/lcf_logo"
         android:label="LearnCraft"
-        android:roundIcon="@drawable/learncraft_logo"
+        android:roundIcon="@drawable/lcf_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.LearnCraft"
         tools:targetApi="31">
@@ -29,6 +30,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".AdminResultListActivity" />
 
         <!-- Login Activity -->
         <activity

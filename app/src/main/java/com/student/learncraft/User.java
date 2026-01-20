@@ -1,19 +1,31 @@
 package com.student.learncraft;
 
 public class User {
-    private String userId;
+    // 🔥 CHANGED FROM STRING TO INT (Matches Database)
+    private int userId;
     private String fullName;
     private String email;
     private String password;
     private String role; // "STUDENT" or "ADMIN"
     private long registrationDate;
-    private String profilePicturePath; // New field for profile picture
+    private String profilePicturePath;
 
     public User() {
         this.registrationDate = System.currentTimeMillis();
     }
 
-    public User(String userId, String fullName, String email, String password, String role) {
+    // --- Constructor 1: Used when Registering (No ID yet) ---
+    public User(String fullName, String email, String password, String role) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.registrationDate = System.currentTimeMillis();
+    }
+
+    // --- Constructor 2: Used by DatabaseHelper (With ID) ---
+    // 🔥 This is the one fixing your error!
+    public User(int userId, String fullName, String email, String password, String role) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -22,11 +34,13 @@ public class User {
         this.registrationDate = System.currentTimeMillis();
     }
 
-    public String getUserId() {
+    // --- Getters and Setters (Updated userId to int) ---
+
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 

@@ -18,6 +18,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,14 +26,17 @@ public class AnalyticsFragment extends Fragment {
 
     private TextView tvTotalQuizzes, tvAverageScore, tvBestScore, tvRecentPerformance;
     private LineChart lineChart;
-    private StorageManager storageManager;
+
+    //  CHANGED: Use DatabaseHelper instead of StorageManager
+    private DatabaseHelper dbHelper;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_analytics, container, false);
 
-        storageManager = new StorageManager(requireContext());
+        // Initialize Database Helper
+        dbHelper = new DatabaseHelper(requireContext());
 
         initViews(view);
         loadAnalytics();
@@ -49,49 +53,55 @@ public class AnalyticsFragment extends Fragment {
     }
 
     private void loadAnalytics() {
-        List<QuizResult> allResults = storageManager.getAllQuizResults();
+        // GET DATA FROM DATABASE
+        List<QuizResult> allResults = dbHelper.getAllResults();
 
-        if (allResults.isEmpty()) {
+        if (allResults == null || allResults.isEmpty()) {
             showEmptyState();
             return;
         }
 
-        // Calculate statistics
-        int totalQuizzes = allResults.size();
-        float averageScore = storageManager.getOverallAveragePercentage();
+        // Sort results by timestamp (Oldest -> Newest) for the chart
+        // Note: Java 8+ style sorting
+        Collections.sort(allResults, (r1, r2) -> Long.compare(r1.getTimestamp(), r2.getTimestamp()));
 
-        // Find best score
+        // --- CALCULATE STATISTICS MANUALLY ---
+        int totalQuizzes = allResults.size();
+        float totalScoreSum = 0f;
         float bestScore = 0f;
+
         for (QuizResult result : allResults) {
-            if (result.getPercentage() > bestScore) {
-                bestScore = result.getPercentage();
+            float percentage = result.getPercentage();
+            totalScoreSum += percentage;
+            if (percentage > bestScore) {
+                bestScore = percentage;
             }
         }
 
-        // Get recent performance (last 5 quizzes)
-        List<QuizResult> recentResults = storageManager.getLatestResults(5);
-        float recentAverage = 0f;
-        for (QuizResult result : recentResults) {
-            recentAverage += result.getPercentage();
-        }
-        if (!recentResults.isEmpty()) {
-            recentAverage /= recentResults.size();
-        }
+        float averageScore = (totalQuizzes > 0) ? (totalScoreSum / totalQuizzes) : 0f;
 
-        // Display statistics
+        // Calculate Recent Performance (Last 5)
+        float recentSum = 0f;
+        int recentCount = 0;
+        // Iterate backwards to get the newest ones
+        for (int i = allResults.size() - 1; i >= 0 && recentCount < 5; i--) {
+            recentSum += allResults.get(i).getPercentage();
+            recentCount++;
+        }
+        float recentAverage = (recentCount > 0) ? (recentSum / recentCount) : 0f;
+
+
+        // --- DISPLAY TEXT ---
         tvTotalQuizzes.setText(String.valueOf(totalQuizzes));
         tvAverageScore.setText(String.format("%.1f%%", averageScore));
         tvBestScore.setText(String.format("%.1f%%", bestScore));
         tvRecentPerformance.setText(String.format("%.1f%%", recentAverage));
 
-        // Setup chart
+        // --- SETUP CHART ---
         setupChart(allResults);
     }
 
     private void setupChart(List<QuizResult> results) {
-        // Sort results by timestamp
-        results.sort((r1, r2) -> Long.compare(r1.getTimestamp(), r2.getTimestamp()));
-
         // Prepare data entries
         List<Entry> entries = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd", Locale.getDefault());
@@ -173,12 +183,16 @@ public class AnalyticsFragment extends Fragment {
         // Show empty message on chart
         lineChart.setNoDataText("📊 No quiz data yet. Take your first quiz!");
         lineChart.setNoDataTextColor(Color.parseColor("#757575"));
+
+        // Clear existing data if any
+        lineChart.setData(null);
         lineChart.invalidate();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        // Refresh data every time the user comes back to this tab
         loadAnalytics();
     }
 }

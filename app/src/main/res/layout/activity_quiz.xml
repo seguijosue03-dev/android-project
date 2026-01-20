@@ -255,29 +255,31 @@
         android:padding="16dp"
         android:weightSum="2">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPrevious"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:text="Previous"
-            android:textSize="16sp"
+            android:text="PREVIOUS"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="#555555"
             android:background="@drawable/button_rounded"
+            android:backgroundTint="#E0E0E0"
             android:layout_marginEnd="8dp"/>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnNext"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:text="Next Question"
-            android:textSize="16sp"
+            android:text="NEXT QUESTION"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:background="@drawable/button_rounded"
+            android:backgroundTint="#1A237E"
             android:layout_marginStart="8dp"/>
-    </LinearLayout>
 
+    </LinearLayout>
 </LinearLayout>

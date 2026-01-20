@@ -51,6 +51,8 @@ android {
 
 dependencies {
     // Core Android
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -58,6 +60,9 @@ dependencies {
     // Apache POI (PPTX reading)
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
+
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     // Required by POI
     implementation("org.apache.xmlbeans:xmlbeans:5.1.1")

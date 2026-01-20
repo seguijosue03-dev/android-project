@@ -15,11 +15,12 @@
 
         <!-- Logo/Icon -->
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/learncraft_logo"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_width="190dp"
+            android:layout_height="190dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/lcf_logo"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="0dp"/>
 
         <!-- App Name -->
         <TextView

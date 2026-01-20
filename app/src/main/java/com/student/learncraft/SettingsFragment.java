@@ -23,6 +23,9 @@ public class SettingsFragment extends Fragment {
     private SettingsManager settingsManager;
     private StorageManager storageManager;
 
+    // 🔥 NEW: Add DatabaseHelper
+    private DatabaseHelper dbHelper;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -33,6 +36,9 @@ public class SettingsFragment extends Fragment {
 
         settingsManager = new SettingsManager(requireContext());
         storageManager = new StorageManager(requireContext());
+
+        // 🔥 Initialize Database Helper
+        dbHelper = new DatabaseHelper(requireContext());
 
         initViews(view);
         loadSettings();
@@ -88,7 +94,6 @@ public class SettingsFragment extends Fragment {
     }
 
     private void loadSettings() {
-        // Load switches only (theme removed)
         switchNotifications.setChecked(settingsManager.isNotificationsEnabled());
         switchSoundEffects.setChecked(settingsManager.isSoundEffectsEnabled());
         switchTimer.setChecked(settingsManager.isTimerEnabled());
@@ -116,14 +121,20 @@ public class SettingsFragment extends Fragment {
         new AlertDialog.Builder(requireContext())
                 .setTitle("⚠️ Clear All Data")
                 .setMessage(
-                        "This will delete all quiz results and uploaded PPTs. " +
+                        "This will delete all quiz results and history. " +
                                 "This action cannot be undone!"
                 )
                 .setPositiveButton("Clear", (dialog, which) -> {
+
+                    // 🔥 FIX: Clear the database instead of just storage
+                    dbHelper.clearAllData();
+
+                    // Optional: Clear old storage too if you want
                     storageManager.clearAllResults();
+
                     Toast.makeText(
                             requireContext(),
-                            "✅ All data cleared",
+                            "✅ All history cleared!",
                             Toast.LENGTH_SHORT
                     ).show();
                 })

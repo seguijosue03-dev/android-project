@@ -3,6 +3,9 @@ package com.student.learncraft;
 import java.util.Date;
 
 public class QuizResult {
+    // 🔥 Added ID field
+    private int id;
+
     private String pptName;
     private int totalQuestions;
     private int correctAnswers;
@@ -23,6 +26,16 @@ public class QuizResult {
         this.percentage = (float) (correctAnswers * 100.0 / totalQuestions);
         this.timestamp = System.currentTimeMillis();
     }
+
+    // 🔥 Added Getters and Setters for ID
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    // ------------------------------------------------
 
     public String getPptName() {
         return pptName;
@@ -46,8 +59,11 @@ public class QuizResult {
 
     public void setCorrectAnswers(int correctAnswers) {
         this.correctAnswers = correctAnswers;
+        // Auto-update wrong answers and percentage if correct answers change
         this.wrongAnswers = totalQuestions - correctAnswers;
-        this.percentage = (float) (correctAnswers * 100.0 / totalQuestions);
+        if (totalQuestions > 0) {
+            this.percentage = (float) (correctAnswers * 100.0 / totalQuestions);
+        }
     }
 
     public int getWrongAnswers() {

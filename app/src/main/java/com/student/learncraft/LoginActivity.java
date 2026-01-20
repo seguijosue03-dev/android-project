@@ -25,6 +25,10 @@ public class LoginActivity extends AppCompatActivity {
 
         userManager = new UserManager(this);
 
+        // 🔥 FIX 1: Create Admin Account AUTOMATICALLY on startup
+        // You don't need to tap anything. This ensures the account exists.
+        userManager.resetAdminAccount();
+
         // Check if already logged in
         if (userManager.isLoggedIn()) {
             navigateBasedOnRole();
@@ -45,39 +49,11 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> attemptLogin());
         tvRegister.setOnClickListener(v -> goToRegister());
 
-        // MULTI TAP on app name to force create admin
-        TextView tvAppName = findViewById(R.id.tvAppName);
-        if (tvAppName != null) {
-            tvAppName.setOnClickListener(new View.OnClickListener() {
-                private int clickCount = 0;
-                private long lastClickTime = 0;
-
-                @Override
-                public void onClick(View v) {
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastClickTime < 500) {
-                        clickCount++;
-                    } else {
-                        clickCount = 1;
-                    }
-                    lastClickTime = currentTime;
-
-                    if (clickCount == 5) {
-                        forceCreateAdmin();
-                        clickCount = 0;
-                    }
-                }
-            });
+        // 🔥 FIX 2: Show the correct credentials on screen for debugging
+        if (tvAdminHint != null) {
+            tvAdminHint.setVisibility(View.VISIBLE);
+            tvAdminHint.setText("Debug: admin@learncraft.com | Admin@123");
         }
-    }
-
-    private void forceCreateAdmin() {
-        userManager.resetAdminAccount();
-        Toast.makeText(
-                this,
-                "✅ Admin Created!\nEmail: admin@learncraft.com\nPassword: admin2025",
-                Toast.LENGTH_LONG
-        ).show();
     }
 
     private void attemptLogin() {
@@ -98,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Attempt login
+        // This will check the database using the hash logic in UserManager
         User user = userManager.login(email, password);
 
         if (user != null) {
@@ -121,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         if (currentUser == null) return;
 
         Intent intent;
+        // Check role to decide where to go
         if (currentUser.isAdmin()) {
             intent = new Intent(this, AdminDashboardActivity.class);
         } else {

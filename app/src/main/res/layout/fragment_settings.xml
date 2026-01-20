@@ -245,9 +245,9 @@
                     android:gravity="center">
 
                     <ImageView
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/learncraft_logo"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/lcf_logo"
 
                         android:layout_marginBottom="12dp" />
 
