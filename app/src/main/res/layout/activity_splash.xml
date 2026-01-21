@@ -22,23 +22,15 @@
         android:padding="32dp">
 
         <!-- Glass Card Logo Holder -->
-        <FrameLayout
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:background="@drawable/glass_card"
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/lcf_logo"
+            android:scaleType="fitCenter"
             android:elevation="16dp"
-            android:layout_marginBottom="20sp"
-            android:padding="28dp">
-
-            <ImageView
-                android:id="@+id/appLogo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/lc_logo"
-                android:scaleType="fitCenter"
-                android:layout_marginBottom="0dp"
-                android:contentDescription="Lc logo" />
-        </FrameLayout>
+            android:layout_marginBottom="0sp"
+            android:contentDescription="Lcf logo" />
 
         <!-- App Name -->
 
