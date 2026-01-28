@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/header_gradient"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quiz Setup 🧠"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customize your quiz before starting"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:alpha="0.9"
+                    android:layout_marginTop="6dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="5dp"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📄 Selected PPT"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvPPTName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="presentation.pptx"
+                    android:textSize="18sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:layout_marginTop="6dp" />
+
+                <TextView
+                    android:id="@+id/tvInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📊 Analyzing slides..."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="10dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number of Questions"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="6dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏱️ 1 minute per question"
+            android:textSize="14sp"
+            android:textColor="@color/accent_teal"
+            android:textStyle="bold"
+            android:layout_marginBottom="18dp" />
+
+
+        <RadioGroup
+            android:id="@+id/rgQuestionCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rb10"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:text="10 Questions   •   10 mins"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/radio_card_bg"
+                android:padding="18dp"
+                android:layout_marginBottom="12dp"
+                android:buttonTint="@color/primary_blue" />
+
+            <RadioButton
+                android:id="@+id/rb20"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:text="20 Questions   •   20 mins"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/radio_card_bg"
+                android:padding="18dp"
+                android:layout_marginBottom="12dp"
+                android:buttonTint="@color/primary_blue"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rb30"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:text="30 Questions   •   30 mins"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/radio_card_bg"
+                android:padding="18dp"
+                android:layout_marginBottom="12dp"
+                android:buttonTint="@color/primary_blue" />
+
+            <RadioButton
+                android:id="@+id/rb50"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/radio_card_bg"
+                android:buttonTint="@color/primary_blue"
+                android:padding="18dp"
+                android:text="50 Questions   •   50 mins"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp" />
+        </RadioGroup>
+
+
+        <Button
+            android:id="@+id/btnStartQuiz"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/button_gradient"
+            android:elevation="6dp"
+            android:text="Start Quiz "
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>
